@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Biblioteca Virtual</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<h2>Iniciar sesión</h2>
+
+<div id="g_id_onload"
+     data-client_id="AQUI_TU_CLIENT_ID"
+     data-callback="loginGoogle">
+</div>
+
+<div class="g_id_signin"></div>
+
+<script>
+function loginGoogle(response) {
+  fetch("http://localhost/BIBLIOTECA-VIRTUAL/backend/auth/google.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "credential=" + response.credential
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = "../index.html";
+    }
+  });
+}
+</script>
+
+</body>
+</html>
+

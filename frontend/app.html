@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca Virtual | Estadística e Informática</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+
+    <!-- Google Login -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<!-- ================= PORTADA ================= -->
+<section id="landing" class="landing">
+    <div class="landing-overlay"></div>
+
+    <div class="landing-content">
+        <h1>📚 Biblioteca Virtual</h1>
+        <p>Estadística & Informática</p>
+
+        <div class="landing-actions">
+            <button class="btn btn-primary" id="btnOpenLogin">Iniciar sesión</button>
+            <button class="btn btn-secondary" id="btnOpenRegister">Registrarse</button>
+        </div>
+    </div>
+
+    <!-- Slider de libros -->
+    <div class="book-slider" id="bookSlider">
+        <!-- JS carga imágenes -->
+    </div>
+</section>
+
+<!-- ================= LOGIN ================= -->
+<div class="modal" id="loginModal">
+    <div class="modal-content modal-small">
+        <h2>Iniciar Sesión</h2>
+
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Correo" required>
+            <input type="password" id="loginPassword" placeholder="Contraseña" required>
+
+            <button class="btn btn-primary" type="submit">Ingresar</button>
+        </form>
+
+        <!-- Google -->
+        <div id="g_id_onload"
+            data-client_id="TU_CLIENT_ID_GOOGLE"
+            data-callback="handleGoogleLogin">
+        </div>
+
+        <div class="g_id_signin" data-theme="outline"></div>
+
+        <p class="link" id="openRecover">¿Olvidaste tu contraseña?</p>
+    </div>
+</div>
+
+<!-- ================= REGISTRO ================= -->
+<div class="modal" id="registerModal">
+    <div class="modal-content">
+        <h2>Registro</h2>
+
+        <form id="registerForm">
+            <input type="text" placeholder="Nombre completo" required>
+            <input type="email" placeholder="Correo" required>
+            <input type="tel" placeholder="Celular">
+            <input type="password" placeholder="Contraseña" required>
+            <input type="password" placeholder="Confirmar contraseña" required>
+
+            <button class="btn btn-primary">Crear cuenta</button>
+        </form>
+    </div>
+</div>
+
+<!-- ================= APP PRINCIPAL ================= -->
+<div id="app" class="app hidden">
+
+    <!-- Header -->
+    <header class="app-header">
+        <h2>📚 Biblioteca Virtual</h2>
+
+        <div class="user-info">
+            <span id="userName"></span>
+            <button id="logoutBtn">Salir</button>
+        </div>
+    </header>
+
+    <!-- Navegación -->
+    <nav class="app-nav">
+        <button data-page="libros" class="nav-btn active">Libros</button>
+        <button data-page="categorias" class="nav-btn">Categorías</button>
+
+        <!-- SOLO ADMIN -->
+        <button data-page="admin" class="nav-btn admin-only">Panel Admin</button>
+    </nav>
+
+    <!-- Contenido -->
+    <main class="app-content">
+
+        <!-- LIBROS -->
+        <section id="page-libros" class="page active">
+            <h3>Catálogo de Libros</h3>
+            <div id="librosGrid" class="libros-grid"></div>
+        </section>
+
+        <!-- ADMIN -->
+        <section id="page-admin" class="page">
+            <h3>Panel Administrador</h3>
+
+            <button class="btn btn-primary" id="btnNuevoLibro">➕ Agregar Libro</button>
+
+            <div id="adminLibrosGrid" class="libros-grid admin"></div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ================= TOAST ================= -->
+<div id="toastContainer"></div>
+
+<!-- ================= JS ================= -->
+<script type="module" src="assets/js/main.js"></script>
+
+<script>
+/* Google login callback */
+function handleGoogleLogin(response) {
+    fetch('/backend/api/usuarios/google-login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ token: response.credential })
+    })
+    .then(r => r.json())
+    .then(data => console.log(data));
+}
+</script>
+
+</body>
+</html>

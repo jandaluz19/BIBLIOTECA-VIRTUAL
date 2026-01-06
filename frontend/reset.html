@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Restablecer contraseña</title>
+</head>
+<body>
+
+<h2>Nueva contraseña</h2>
+
+<input type="password" id="pass1" placeholder="Nueva contraseña">
+<input type="password" id="pass2" placeholder="Confirmar contraseña">
+<button onclick="reset()">Guardar</button>
+
+<p id="msg"></p>
+
+<script>
+  const token = new URLSearchParams(window.location.search).get("token");
+
+  async function reset() {
+    const p1 = pass1.value;
+    const p2 = pass2.value;
+
+    if (p1 !== p2) {
+      msg.innerText = "Las contraseñas no coinciden";
+      return;
+    }
+
+    const res = await fetch(
+      "http://localhost/BIBLIOTECA-VIRTUAL/backend/api/usuarios/reset-password",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password: p1 })
+      }
+    );
+
+    const data = await res.json();
+    msg.innerText = data.mensaje;
+  }
+</script>
+
+</body>
+</html>

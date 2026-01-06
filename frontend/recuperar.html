@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Recuperar contraseña</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui;
+      background: #1e3a8a;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #fff;
+      color: #000;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 360px;
+    }
+    input, button {
+      width: 100%;
+      padding: .6rem;
+      margin-top: .7rem;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Recuperar contraseña</h2>
+  <p>Ingresa tu correo</p>
+
+  <input type="email" id="correo" placeholder="Correo" required>
+  <button onclick="recuperar()">Enviar enlace</button>
+
+  <p id="mensaje"></p>
+</div>
+
+<script>
+  async function recuperar() {
+    const correo = document.getElementById('correo').value;
+
+    const res = await fetch(
+      "http://localhost/BIBLIOTECA-VIRTUAL/backend/api/usuarios/recuperar",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ correo })
+      }
+    );
+
+    const data = await res.json();
+    document.getElementById('mensaje').innerText = data.mensaje;
+  }
+</script>
+
+</body>
+</html>
