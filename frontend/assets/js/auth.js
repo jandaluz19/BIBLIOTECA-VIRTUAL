@@ -1,43 +1,57 @@
-const API_URL = '/BIBLIOTECA-VIRTUAL/backend/api';
+const LOGIN_URL = '/BIBLIOTECA-VIRTUAL/backend/login';
 
+/**
+ * Iniciar sesión
+ */
 export async function login(email, password) {
-    const response = await fetch(`${API_URL}/usuarios/login`, {
+    const response = await fetch(LOGIN_URL, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({ email, password })
+        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
     });
 
-    const result = await response.json();
+    const text = await response.text();
 
-    if (!response.ok || !result.success) {
-        throw new Error(result.message || 'Error al iniciar sesión');
+    // Normalizamos el texto
+    const cleanText = text.toLowerCase();
+
+    // ❌ Login incorrecto
+    if (!response.ok || !cleanText.includes('exitoso')) {
+        throw new Error(text || 'Credenciales incorrectas');
     }
 
-    // 🔐 Guardar sesión
-    localStorage.setItem('token', result.data.token);
-    localStorage.setItem('usuario', JSON.stringify(result.data.usuario));
+    // ✅ Login correcto → guardar sesión
+    localStorage.setItem('token', 'authenticated');
+    localStorage.setItem(
+        'usuario',
+        JSON.stringify({ email })
+    );
 
-    return result.data.usuario;
+    return true;
 }
 
+/**
+ * Cerrar sesión
+ */
 export function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
-    window.location.href = 'login.html';
+    window.location.href = '/BIBLIOTECA-VIRTUAL/frontend/login.html';
 }
 
+/**
+ * Verificar autenticación
+ */
 export function isAuthenticated() {
-    return !!localStorage.getItem('token');
+    return localStorage.getItem('token') === 'authenticated';
 }
 
+/**
+ * Obtener usuario actual
+ */
 export function getUser() {
     const user = localStorage.getItem('usuario');
     return user ? JSON.parse(user) : null;
-}
-
-export function isAdmin() {
-    const user = getUser();
-    return user && user.tipo === 'admin';
 }

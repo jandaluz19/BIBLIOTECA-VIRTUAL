@@ -5,7 +5,7 @@
   <title>Login | Biblioteca Virtual</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Identity Services -->
+  <!-- Google Identity -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
@@ -25,12 +25,15 @@
       max-width: 420px;
       width: 100%;
       box-shadow: 0 25px 50px rgba(0,0,0,.25);
-      animation: fadeIn 0.8s ease-in-out;
+      animation: fadeIn .6s ease;
     }
-    h1 { text-align: center; margin-bottom: 1.5rem; }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
     input {
       width: 100%;
-      padding: .7rem;
+      padding: .75rem;
       margin-bottom: .8rem;
       border-radius: 8px;
       border: 1px solid #ccc;
@@ -38,24 +41,23 @@
     }
     button {
       width: 100%;
-      padding: .7rem;
+      padding: .75rem;
       border: none;
       border-radius: 8px;
       background: #2563eb;
       color: white;
-      cursor: pointer;
       font-weight: 600;
-      transition: transform .3s;
+      cursor: pointer;
     }
-    button:hover { transform: scale(1.05); }
+    button:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
     .divider {
-      text-align: center;
-      margin: 1.2rem 0;
-      color: #777;
-      position: relative;
       display: flex;
       align-items: center;
-      justify-content: center;
+      margin: 1.2rem 0;
+      color: #777;
     }
     .divider::before,
     .divider::after {
@@ -68,38 +70,39 @@
     }
     .toggle {
       text-align: center;
-      margin-top: 1rem;
-      cursor: pointer;
+      margin-top: .8rem;
       color: #2563eb;
-      text-decoration: underline;
+      cursor: pointer;
     }
     #message {
-      min-height: 20px;
-      margin: 10px 0;
       text-align: center;
-      font-size: 0.9rem;
+      min-height: 20px;
+      font-size: .9rem;
+      margin-bottom: .6rem;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
+      from { opacity: 0; transform: translateY(-15px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .hidden { display: none; }
   </style>
 </head>
 
 <body>
-<div class="card">
-  <h1>Biblioteca Virtual</h1>
 
-  <!-- LOGIN TRADICIONAL -->
-  <form id="loginForm">
+<div class="card">
+  <h1>📚 Biblioteca Virtual</h1>
+
+  <!-- LOGIN -->
+  <form id="loginForm" novalidate>
     <input type="email" id="email" placeholder="Correo electrónico" required>
     <input type="password" id="password" placeholder="Contraseña" required>
+
     <div id="message"></div>
-    <button type="submit">Iniciar sesión</button>
+
+    <button type="submit" id="loginBtn">Iniciar sesión</button>
   </form>
 
-  <div class="divider"><span>— O —</span></div>
+  <div class="divider"><span>O</span></div>
 
   <!-- GOOGLE LOGIN -->
   <div id="g_id_onload"
@@ -107,104 +110,24 @@
        data-callback="handleGoogleLogin"
        data-auto_prompt="false">
   </div>
+
   <div class="g_id_signin"
        data-type="standard"
        data-size="large"
-       data-theme="outline"
-       data-shape="pill">
+       data-theme="outline">
   </div>
 
-  <div class="toggle" onclick="showRecoverForm()">
+  <div class="toggle" onclick="location.href='recuperar.html'">
     ¿Olvidaste tu contraseña?
   </div>
 
-  <div class="toggle" style="margin-top: 0.5rem;" onclick="location.href='register.html'">
+  <div class="toggle" onclick="location.href='register.html'">
     ¿No tienes cuenta? Registrarse
   </div>
-
-  <!-- RECUPERAR CONTRASEÑA (dinámico) -->
-  <form id="recoverForm" class="hidden">
-    <input type="email" id="recoverEmail" placeholder="Ingresa tu correo" required>
-    <button type="submit">Enviar enlace de recuperación</button>
-    <div id="recoverMessage"></div>
-  </form>
 </div>
 
-<script>
-// ✅ LOGIN TRADICIONAL
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const messageDiv = document.getElementById('message');
-
-  try {
-    const res = await fetch('backend/login.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
-    });
-    const text = await res.text();
-
-    if (text.includes("exitoso")) {
-      messageDiv.textContent = '✅ Iniciando sesión...';
-      messageDiv.style.color = 'green';
-      setTimeout(() => window.location.href = 'catalogo.html', 600);
-    } else {
-      messageDiv.textContent = text;
-      messageDiv.style.color = 'red';
-    }
-  } catch (err) {
-    messageDiv.textContent = 'Error de conexión con el servidor';
-    messageDiv.style.color = 'red';
-  }
-});
-
-// ✅ LOGIN CON GOOGLE
-function handleGoogleLogin(response) {
-  fetch('backend/google_login.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token: response.credential })
-  })
-  .then(res => res.text())
-  .then(data => {
-    if (data.includes("exitoso")) {
-      window.location.href = 'catalogo.html'; // ✅ redirige al catálogo
-    } else {
-      alert("❌ Error en login con Google");
-    }
-  })
-  .catch(() => alert("❌ Error de conexión con Google Login"));
-}
-window.handleGoogleLogin = handleGoogleLogin;
-
-// ✅ RECUPERAR CONTRASEÑA
-function showRecoverForm() {
-  document.getElementById('recoverForm').classList.toggle('hidden');
-}
-
-document.getElementById('recoverForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const email = document.getElementById('recoverEmail').value.trim();
-  const msg = document.getElementById('recoverMessage');
-
-  try {
-    const res = await fetch('backend/recuperar.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `email=${encodeURIComponent(email)}`
-    });
-    const text = await res.text();
-    msg.textContent = text;
-    msg.style.color = text.includes("enviado") ? 'green' : 'red';
-  } catch (err) {
-    msg.textContent = 'Error de conexión con el servidor';
-    msg.style.color = 'red';
-  }
-});
-</script>
+<!-- 🚀 JS REAL (ÚNICO) -->
+<script type="module" src="assets/js/login.js"></script>
 
 </body>
 </html>

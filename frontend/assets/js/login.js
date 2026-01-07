@@ -1,33 +1,31 @@
-/**
- * Login simple sin backend (solo para prototipo)
- */
+console.log('🔥 login.js EJECUTADO');
 
-function login(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('username').value.trim();
+import { login } from './auth.js';
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    console.log('📩 submit capturado');
+
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
-    const messageDiv = document.getElementById('message');
+    const message = document.getElementById('message');
+    const btn = document.getElementById('loginBtn');
 
-    // Usuarios predefinidos (en producción, usarías una API segura)
-    if ((username === 'admin' && password === '1234') || (username === 'usuario' && password === '1234')) {
-        // Guardar sesión
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('username', username);
-        localStorage.setItem('role', username === 'admin' ? 'admin' : 'user');
-        
-        // Mostrar mensaje y redirigir
-        messageDiv.textContent = 'Iniciando sesión...';
-        messageDiv.style.color = 'green';
-        
-        // Redirigir según rol
-        const targetPage = (username === 'admin') ? 'dashboard.html' : 'catalogo.html';
-        setTimeout(() => {
-            window.location.href = targetPage;
-        }, 600);
-    } else {
-        messageDiv.textContent = 'Usuario o contraseña incorrectos';
-        messageDiv.style.color = 'red';
+    message.textContent = '';
+    btn.disabled = true;
+
+    try {
+        await login(email, password);
+
+        console.log('✅ login OK, redirigiendo...');
+        window.location.href = '/BIBLIOTECA-VIRTUAL/frontend/catalogo.html';
+
+    } catch (error) {
+        console.error(error);
+        message.textContent = error.message;
+        message.style.color = 'red';
+    } finally {
+        btn.disabled = false;
     }
-}
-
+});

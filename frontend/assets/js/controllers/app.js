@@ -1,4 +1,4 @@
-import { isAuthenticated, getUser } from '../auth.js';
+import { isAuthenticated } from '../auth.js';
 
 export const app = {
     init() {
@@ -7,32 +7,19 @@ export const app = {
         const protectedPages = [
             'catalogo.html',
             'ver-libro.html',
-            'admin.html'
+            'libros.html',
+            'estadistica.html'
         ];
 
-        const publicPages = [
-            'login.html',
-            'index.html'
-        ];
-
-        const logged = isAuthenticated();
-
-        // 🔒 Protección de páginas privadas
-        if (protectedPages.includes(currentPage) && !logged) {
-            window.location.href = 'login.html';
+        // 🔐 Si NO está logueado y entra a página protegida
+        if (protectedPages.includes(currentPage) && !isAuthenticated()) {
+            window.location.href = '/BIBLIOTECA-VIRTUAL/frontend/login.html';
             return;
         }
 
-        // 🚀 Redirección automática si ya está logueado
-        if (logged && publicPages.includes(currentPage)) {
-            window.location.href = 'catalogo.html';
-            return;
-        }
-
-        // 👤 Mostrar info del usuario si existe
-        const user = getUser();
-        if (user) {
-            console.log('Usuario activo:', user.nombre);
+        // 🚀 Si YA está logueado y entra al login
+        if (currentPage === 'login.html' && isAuthenticated()) {
+            window.location.href = '/BIBLIOTECA-VIRTUAL/frontend/catalogo.html';
         }
     }
 };

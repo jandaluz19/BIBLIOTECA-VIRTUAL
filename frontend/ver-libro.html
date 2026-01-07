@@ -2,21 +2,29 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ver Libro</title>
+    <title>Ver Libro | Biblioteca Virtual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-<h2>📖 Lectura del Libro</h2>
+<header class="header">
+    <button onclick="history.back()">⬅ Volver</button>
+    <h1>📖 Vista del Libro</h1>
+</header>
 
-<iframe 
-    id="visorPDF"
-    width="100%"
-    height="600px">
-</iframe>
+<main class="container">
+    <h2 id="titulo"></h2>
+    <p id="autor"></p>
 
-<br>
-<a id="descargar" download>⬇️ Descargar PDF</a>
+    <iframe id="visorPDF" width="100%" height="600px"></iframe>
 
-<script src="js/ver-libro.js"></script>
+    <a id="descargar" class="btn" download>Descargar PDF</a>
+</main>
+
+<script type="module" src="assets/js/main.js"></script>
+<script type="module" src="assets/js/pages/ver-libro.js"></script>
+
 </body>
 </html>

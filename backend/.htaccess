@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /BIBLIOTECA-VIRTUAL/backend/
+
+RewriteRule ^api/(.*)$ routes/api.php [QSA,L]
