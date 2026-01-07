@@ -5,129 +5,135 @@
   <title>Login | Biblioteca Virtual</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Identity -->
+  <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
     body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #2563eb, #1e3a8a);
-      min-height: 100vh;
+      margin: 0;
       display: flex;
-      align-items: center;
       justify-content: center;
-    }
-    .card {
-      background: #fff;
-      padding: 2.5rem;
-      border-radius: 14px;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 25px 50px rgba(0,0,0,.25);
-      animation: fadeIn .6s ease;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 1.2rem;
-    }
-    input {
-      width: 100%;
-      padding: .75rem;
-      margin-bottom: .8rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    button {
-      width: 100%;
-      padding: .75rem;
-      border: none;
-      border-radius: 8px;
-      background: #2563eb;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button:disabled {
-      opacity: .7;
-      cursor: not-allowed;
-    }
-    .divider {
-      display: flex;
       align-items: center;
-      margin: 1.2rem 0;
-      color: #777;
+      min-height: 100vh;
     }
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      border-bottom: 1px solid #ddd;
+    .login-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.25);
+      width: 100%;
+      max-width: 420px;
+      animation: fadeIn 0.8s ease-in-out;
     }
-    .divider span {
-      padding: 0 10px;
-    }
-    .toggle {
-      text-align: center;
-      margin-top: .8rem;
-      color: #2563eb;
-      cursor: pointer;
-    }
-    #message {
-      text-align: center;
-      min-height: 20px;
-      font-size: .9rem;
-      margin-bottom: .6rem;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    h2 { text-align: center; margin-bottom: 1rem; color: #2a5298; }
+    form { display: flex; flex-direction: column; gap: 1rem; }
+    input { padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; }
+    .btn { padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: transform 0.3s; }
+    .btn-primary { background: #2a5298; color: white; }
+    .btn-primary:hover { transform: scale(1.05); }
+    .google-login { text-align: center; margin-top: 1rem; }
+    .link { text-align: center; margin-top: 1rem; }
+    #message { text-align: center; font-size: 0.9rem; min-height: 20px; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
-
 <body>
 
-<div class="card">
-  <h1>📚 Biblioteca Virtual</h1>
+<div class="login-container">
+  <h2>Iniciar Sesión</h2>
 
-  <!-- LOGIN -->
+  <!-- Formulario de login -->
   <form id="loginForm" novalidate>
-    <input type="email" id="email" placeholder="Correo electrónico" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
     <input type="password" id="password" placeholder="Contraseña" required>
-
     <div id="message"></div>
-
-    <button type="submit" id="loginBtn">Iniciar sesión</button>
+    <button type="submit" id="loginBtn" class="btn btn-primary">Ingresar</button>
   </form>
 
-  <div class="divider"><span>O</span></div>
-
-  <!-- GOOGLE LOGIN -->
-  <div id="g_id_onload"
-       data-client_id="892296470916-v6i0gamfpur8ircts0nrd9kvp99qhr0b.apps.googleusercontent.com"
-       data-callback="handleGoogleLogin"
-       data-auto_prompt="false">
+  <!-- Login con Google -->
+  <div class="google-login">
+    <div id="g_id_onload"
+         data-client_id="892296470916-v6i0gamfpur8ircts0nrd9kvp99qhr0b.apps.googleusercontent.com"
+         data-context="signin"
+         data-callback="handleGoogleLogin"
+         data-auto_prompt="false"></div>
+    <div class="g_id_signin" 
+         data-type="standard" 
+         data-shape="rectangular" 
+         data-theme="outline" 
+         data-text="signin_with" 
+         data-size="large"></div>
   </div>
 
-  <div class="g_id_signin"
-       data-type="standard"
-       data-size="large"
-       data-theme="outline">
-  </div>
-
-  <div class="toggle" onclick="location.href='recuperar.html'">
-    ¿Olvidaste tu contraseña?
-  </div>
-
-  <div class="toggle" onclick="location.href='register.html'">
-    ¿No tienes cuenta? Registrarse
+  <div class="link">
+    <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
   </div>
 </div>
 
-<!-- 🚀 JS REAL (ÚNICO) -->
-<script type="module" src="assets/js/login.js"></script>
+<!-- ================= JS ================= -->
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const correo   = document.getElementById("correo").value.trim();
+  const password = document.getElementById("password").value;
+  const msg      = document.getElementById("message");
+  const btn      = document.getElementById("loginBtn");
+
+  msg.textContent = "";
+  btn.disabled = true;
+
+  if (!correo || !password) {
+    msg.textContent = "❌ Completa los campos obligatorios";
+    msg.style.color = "red";
+    btn.disabled = false;
+    return;
+  }
+
+  try {
+    const res = await fetch("../backend/login.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `correo=${encodeURIComponent(correo)}&password=${encodeURIComponent(password)}`
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+      msg.textContent = "✅ Login exitoso. Redirigiendo...";
+      msg.style.color = "green";
+      setTimeout(() => window.location.href = data.redirect, 1500);
+    } else {
+      msg.textContent = "❌ " + (data.message || "Error en el login");
+      msg.style.color = "red";
+    }
+  } catch (err) {
+    msg.textContent = "Error de conexión con el servidor";
+    msg.style.color = "red";
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ✅ Callback de Google Login
+function handleGoogleLogin(response) {
+  fetch("../backend/google_login.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: response.credential })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === "success") {
+      window.location.href = data.redirect;
+    } else {
+      alert("❌ Error en login con Google");
+    }
+  });
+}
+</script>
 
 </body>
 </html>

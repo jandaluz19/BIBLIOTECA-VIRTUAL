@@ -19,7 +19,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         await login(email, password);
 
         console.log('✅ login OK, redirigiendo...');
-        window.location.href = '/BIBLIOTECA-VIRTUAL/frontend/catalogo.html';
+        window.location.href = "../backend/catalogo.php";
 
     } catch (error) {
         console.error(error);

@@ -1,27 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Catálogo | Biblioteca Virtual</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="UTF-8">
+  <title>Catálogo | Biblioteca Virtual</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f4f4f9; }
+    header { background: #2a5298; color: white; padding: 1rem; text-align: center; }
+    .catalogo { display: flex; flex-wrap: wrap; gap: 1rem; padding: 1rem; }
+    .categoria { flex: 1 1 100%; margin-top: 1rem; }
+    h2 { color: #2a5298; }
+    .libros { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .libro { background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.1); text-align: center; }
+    .libro button { margin-top: 0.5rem; padding: 8px; border: none; border-radius: 6px; background: #2a5298; color: white; cursor: pointer; }
+    .libro button:hover { background: #1e3a8a; }
+  </style>
 </head>
 <body>
 
-<header class="header">
-    <h1>📚 Biblioteca Virtual</h1>
-    <button id="logoutBtn">Cerrar sesión</button>
+<header>
+  <h1>Catálogo de Libros</h1>
 </header>
 
-<main class="container">
-    <h2>Catálogo de Libros</h2>
+<div class="catalogo">
+  <!-- Categoría Estadística -->
+  <div class="categoria">
+    <h2>📊 Estadística</h2>
+    <div class="libros">
+      <div class="libro">
+        <h3>Introducción a la Estadística</h3>
+        <button onclick="verLibro('pdfs/estadistica1.pdf')">Ver PDF</button>
+        <button onclick="descargarLibro('pdfs/estadistica1.pdf')">Descargar</button>
+      </div>
+      <div class="libro">
+        <h3>Probabilidades Avanzadas</h3>
+        <button onclick="verLibro('pdfs/estadistica2.pdf')">Ver PDF</button>
+        <button onclick="descargarLibro('pdfs/estadistica2.pdf')">Descargar</button>
+      </div>
+    </div>
+  </div>
 
-    <div id="libros" class="grid"></div>
-</main>
+  <!-- Categoría Informática -->
+  <div class="categoria">
+    <h2>💻 Informática</h2>
+    <div class="libros">
+      <div class="libro">
+        <h3>Fundamentos de Programación</h3>
+        <button onclick="verLibro('pdfs/informatica1.pdf')">Ver PDF</button>
+        <button onclick="descargarLibro('pdfs/informatica1.pdf')">Descargar</button>
+      </div>
+      <div class="libro">
+        <h3>Bases de Datos</h3>
+        <button onclick="verLibro('pdfs/informatica2.pdf')">Ver PDF</button>
+        <button onclick="descargarLibro('pdfs/informatica2.pdf')">Descargar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<script type="module" src="assets/js/main.js"></script>
-<script type="module" src="assets/js/pages/catalogo.js"></script>
+<script>
+function verLibro(ruta) {
+  window.open(ruta, "_blank"); // abre el PDF en nueva pestaña
+}
+function descargarLibro(ruta) {
+  const link = document.createElement("a");
+  link.href = ruta;
+  link.download = ruta.split("/").pop();
+  link.click();
+}
+</script>
 
 </body>
 </html>

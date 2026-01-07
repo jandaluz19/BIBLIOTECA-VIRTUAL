@@ -27,45 +27,45 @@ CREATE TABLE IF NOT EXISTS categorias (
     INDEX idx_activo (activo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ========================================
--- TABLA: libros
--- ========================================
-CREATE TABLE IF NOT EXISTS libros (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(255) NOT NULL,
-    autor VARCHAR(255) NOT NULL,
-    categoria_id INT NOT NULL,
-    anio_publicacion INT NOT NULL,
-    isbn VARCHAR(20) UNIQUE,
-    editorial VARCHAR(255),
-    descripcion TEXT,
-    paginas INT,
-    idioma VARCHAR(50) DEFAULT 'Español',
-    portada_url VARCHAR(500),
-    archivo_pdf VARCHAR(500),
-    disponible BOOLEAN DEFAULT TRUE,
-    stock INT DEFAULT 1,
-    veces_prestado INT DEFAULT 0,
-    calificacion DECIMAL(3,2) DEFAULT 0.00,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE RESTRICT,
-    
-    INDEX idx_titulo (titulo),
-    INDEX idx_autor (autor),
-    INDEX idx_categoria (categoria_id),
-    INDEX idx_isbn (isbn),
-    INDEX idx_disponible (disponible),
-    
-    FULLTEXT INDEX ft_busqueda (titulo, autor, descripcion)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    -- ========================================
+    -- TABLA: libros
+    -- ========================================
+    CREATE TABLE IF NOT EXISTS libros (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        titulo VARCHAR(255) NOT NULL,
+        autor VARCHAR(255) NOT NULL,
+        categoria_id INT NOT NULL,
+        anio_publicacion INT NOT NULL,
+        isbn VARCHAR(20) UNIQUE,
+        editorial VARCHAR(255),
+        descripcion TEXT,
+        paginas INT,
+        idioma VARCHAR(50) DEFAULT 'Español',
+        portada_url VARCHAR(500),
+        archivo_pdf VARCHAR(500),
+        disponible BOOLEAN DEFAULT TRUE,
+        stock INT DEFAULT 1,
+        veces_prestado INT DEFAULT 0,
+        calificacion DECIMAL(3,2) DEFAULT 0.00,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        
+        FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE RESTRICT,
+        
+        INDEX idx_titulo (titulo),
+        INDEX idx_autor (autor),
+        INDEX idx_categoria (categoria_id),
+        INDEX idx_isbn (isbn),
+        INDEX idx_disponible (disponible),
+        
+        FULLTEXT INDEX ft_busqueda (titulo, autor, descripcion)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 -- ========================================
 -- TABLA: cambiar contraseña
 -- ========================================
-CREATE TABLE password_resets (
+CREATE TABLE recuperar (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(150) NOT NULL,
     token VARCHAR(255) NOT NULL,
@@ -82,12 +82,11 @@ CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
+    celular VARCHAR(20),
     password VARCHAR(255) NOT NULL,
-    telefono VARCHAR(20),
-    direccion TEXT,
-    tipo ENUM('admin', 'bibliotecario', 'usuario') DEFAULT 'usuario',
-    activo BOOLEAN DEFAULT TRUE,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    tipo ENUM('admin', 'usuario') DEFAULT 'usuario',
+    activo TINYINT(1) DEFAULT 1,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ultimo_acceso TIMESTAMP NULL,
     avatar_url VARCHAR(500),
     
@@ -95,17 +94,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
     INDEX idx_tipo (tipo),
     INDEX idx_activo (activo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ========================================
--- TABLA: recuperar contraseña
--- ========================================
-CREATE TABLE recuperaciones (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    token VARCHAR(64) NOT NULL,
-    expira_en DATETIME NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-);
 
 -- ========================================
 -- TABLA: prestamos

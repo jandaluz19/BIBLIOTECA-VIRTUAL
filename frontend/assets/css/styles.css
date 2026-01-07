@@ -128,3 +128,19 @@ section h2 {
   width: 220px;
   height: 220px;
 }
+
+.notificacion {
+  background: #4caf50; /* verde éxito */
+  color: white;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  text-align: center;
+  animation: fadeOut 4s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; display: none; }
+}

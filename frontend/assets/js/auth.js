@@ -1,4 +1,5 @@
-const LOGIN_URL = '/BIBLIOTECA-VIRTUAL/backend/login';
+// 📌 Endpoint real del login
+const LOGIN_URL = '/BIBLIOTECA-VIRTUAL/backend/api/usuarios/login/index.php';
 
 /**
  * Iniciar sesión
@@ -12,21 +13,23 @@ export async function login(email, password) {
         body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
     });
 
-    const text = await response.text();
-
-    // Normalizamos el texto
-    const cleanText = text.toLowerCase();
+    // Esperamos JSON del backend
+    const data = await response.json();
 
     // ❌ Login incorrecto
-    if (!response.ok || !cleanText.includes('exitoso')) {
-        throw new Error(text || 'Credenciales incorrectas');
+    if (!response.ok || data.status !== 'success') {
+        throw new Error(data.message || 'Credenciales incorrectas');
     }
 
-    // ✅ Login correcto → guardar sesión
+    // ✅ Login correcto → guardar sesión en localStorage
     localStorage.setItem('token', 'authenticated');
     localStorage.setItem(
         'usuario',
-        JSON.stringify({ email })
+        JSON.stringify({
+            id: data.usuario?.id,
+            email: data.usuario?.email,
+            tipo: data.usuario?.tipo
+        })
     );
 
     return true;

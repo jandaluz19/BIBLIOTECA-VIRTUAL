@@ -1,6 +1,12 @@
 <?php
 session_start();
-session_unset();
+
+// Destruir todas las variables de sesión
+$_SESSION = [];
+
+// Destruir la sesión
 session_destroy();
-echo "Sesión cerrada correctamente";
-?>
+
+// Redirigir al login
+header("Location: ../frontend/login.html");
+exit;

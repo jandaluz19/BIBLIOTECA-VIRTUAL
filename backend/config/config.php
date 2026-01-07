@@ -1,33 +1,20 @@
 <?php
-/**
- * Configuración General de la Aplicación
- * Biblioteca Virtual
- */
 
 // Prevenir acceso directo
 if (!defined('APP_ROOT')) {
     define('APP_ROOT', dirname(__DIR__));
 }
 
-// ========================================
-// CONFIGURACIÓN DE ENTORNO
-// ========================================
-
 define('ENVIRONMENT', 'development'); // development | production
 define('DEBUG_MODE', ENVIRONMENT === 'development');
 
-// ========================================
-// CONFIGURACIÓN DE APLICACIÓN
-// ========================================
+
 
 define('APP_NAME', 'Biblioteca Virtual');
 define('APP_VERSION', '1.0.0');
 define('APP_URL', 'http://localhost/BIBLIOTECA-VIRTUAL');
 define('API_URL', APP_URL . '/backend');
 
-// ========================================
-// CONFIGURACIÓN DE BASE DE DATOS
-// ========================================
 
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'biblioteca_virtual');
@@ -35,18 +22,10 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
-// ========================================
-// CONFIGURACIÓN DE SEGURIDAD
-// ========================================
-
 define('JWT_SECRET_KEY', 'tu_clave_secreta_super_segura_cambiar_en_produccion');
 define('JWT_EXPIRATION', 3600); // 1 hora en segundos
 define('PASSWORD_MIN_LENGTH', 8);
 define('SESSION_LIFETIME', 1800); // 30 minutos
-
-// ========================================
-// CONFIGURACIÓN DE ARCHIVOS
-// ========================================
 
 define('UPLOAD_DIR', APP_ROOT . '/uploads');
 define('UPLOAD_MAX_SIZE', 5 * 1024 * 1024); // 5MB
@@ -60,30 +39,16 @@ if (!file_exists(UPLOAD_DIR)) {
     mkdir(UPLOAD_DIR . '/avatars', 0755, true);
 }
 
-// ========================================
-// CONFIGURACIÓN DE PAGINACIÓN
-// ========================================
 
 define('ITEMS_PER_PAGE', 12);
 define('MAX_ITEMS_PER_PAGE', 100);
-
-// ========================================
-// CONFIGURACIÓN DE PRÉSTAMOS
-// ========================================
 
 define('DIAS_PRESTAMO_DEFAULT', 14);
 define('MULTA_POR_DIA', 2.00); // En la moneda local
 define('MAX_LIBROS_SIMULTANEOUS', 3);
 
-// ========================================
-// CONFIGURACIÓN DE TIMEZONE
-// ========================================
 
 date_default_timezone_set('America/Lima');
-
-// ========================================
-// CONFIGURACIÓN DE ERRORES
-// ========================================
 
 if (DEBUG_MODE) {
     error_reporting(E_ALL);
@@ -96,11 +61,6 @@ if (DEBUG_MODE) {
     ini_set('error_log', APP_ROOT . '/logs/error.log');
 }
 
-// ========================================
-// HEADERS DE SEGURIDAD Y CORS
-// ========================================
-
-// Permitir CORS desde el frontend
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
@@ -117,10 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
-// ========================================
-// AUTOLOAD DE CLASES
-// ========================================
 
 spl_autoload_register(function ($class) {
     $directories = [
@@ -139,12 +95,7 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// ========================================
-// FUNCIONES HELPER GLOBALES
-// ========================================
-
-/**
- * Respuesta JSON estandarizada
+/* Respuesta JSON estandarizada
  */
 function jsonResponse($data, $statusCode = 200, $message = null) {
     http_response_code($statusCode);
@@ -259,10 +210,6 @@ function validateMethod($allowedMethods) {
         errorResponse('Método no permitido', 405);
     }
 }
-
-// ========================================
-// INICIALIZACIÓN
-// ========================================
 
 // Cargar archivo de base de datos
 require_once APP_ROOT . '/config/database.php';
