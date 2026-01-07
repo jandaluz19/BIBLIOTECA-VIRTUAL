@@ -5,19 +5,13 @@
   <title>Registro | Biblioteca Virtual</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="assets/css/variables.css">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/responsive.css">
-
-  <!-- Google Login -->
+  <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f5f7fa;
+      background: linear-gradient(135deg, #2563eb, #1e3a8a);
       margin: 0;
       display: flex;
       justify-content: center;
@@ -28,10 +22,11 @@
     .register-container {
       background: #fff;
       padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,.2);
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.25);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      animation: fadeIn 0.8s ease-in-out;
     }
 
     h2 {
@@ -47,15 +42,15 @@
     }
 
     input {
-      padding: 10px;
-      border-radius: 5px;
+      padding: 12px;
+      border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 1rem;
     }
 
     .btn {
       padding: 12px;
-      border-radius: 5px;
+      border-radius: 8px;
       border: none;
       font-weight: bold;
       cursor: pointer;
@@ -80,6 +75,17 @@
       text-align: center;
       margin-top: 1rem;
     }
+
+    #message {
+      text-align: center;
+      font-size: 0.9rem;
+      min-height: 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -94,6 +100,7 @@
     <input type="tel" id="celular" placeholder="Celular">
     <input type="password" id="password" placeholder="Contraseña" required>
     <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
+    <div id="message"></div>
     <button type="submit" class="btn btn-primary">Registrarse</button>
   </form>
 
@@ -105,7 +112,12 @@
          data-callback="handleGoogleLogin"
          data-auto_prompt="false">
     </div>
-    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signup_with" data-size="large"></div>
+    <div class="g_id_signin" 
+         data-type="standard" 
+         data-shape="rectangular" 
+         data-theme="outline" 
+         data-text="signup_with" 
+         data-size="large"></div>
   </div>
 
   <div class="link">
@@ -115,35 +127,62 @@
 
 <!-- ================= JS ================= -->
 <script>
-  // Validación básica del formulario
-  document.getElementById("registerForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
 
-    if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden");
-      return;
-    }
+  const nombre   = document.getElementById("nombre").value.trim();
+  const correo   = document.getElementById("correo").value.trim();
+  const celular  = document.getElementById("celular").value.trim();
+  const password = document.getElementById("password").value;
+  const confirm  = document.getElementById("confirmPassword").value;
+  const msg      = document.getElementById("message");
 
-    // Aquí puedes enviar los datos al backend
-    alert("Registro exitoso (simulado).");
-  });
-
-  // Callback de Google Login
-  function handleGoogleLogin(response) {
-    // Aquí envías el token al backend para validarlo
-    fetch('/backend/api/usuarios/google-login', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ token: response.credential })
-    })
-    .then(r => r.json())
-    .then(data => {
-      console.log("Respuesta del servidor:", data);
-      alert("Login con Google exitoso (simulado).");
-    });
+  if (password !== confirm) {
+    msg.textContent = "❌ Las contraseñas no coinciden";
+    msg.style.color = "red";
+    return;
   }
+
+  try {
+    const res = await fetch("backend/register.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `nombre=${encodeURIComponent(nombre)}&correo=${encodeURIComponent(correo)}&celular=${encodeURIComponent(celular)}&password=${encodeURIComponent(password)}&confirmPassword=${encodeURIComponent(confirm)}`
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+      msg.textContent = "✅ Registro exitoso. Redirigiendo al login...";
+      msg.style.color = "green";
+      setTimeout(() => window.location.href = "login.html", 1500);
+    } else {
+      msg.textContent = "❌ " + data.message;
+      msg.style.color = "red";
+    }
+  } catch (err) {
+    msg.textContent = "Error de conexión con el servidor";
+    msg.style.color = "red";
+  }
+}
+
+// ✅ Callback de Google Login
+function handleGoogleLogin(response) {
+  fetch("backend/google_login.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: response.credential })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === "success") {
+      alert("✅ Registro/Login con Google exitoso");
+      window.location.href = "app.html";
+    } else {
+      alert("❌ Error en login con Google");
+    }
+  });
+}
 </script>
 
 </body>
