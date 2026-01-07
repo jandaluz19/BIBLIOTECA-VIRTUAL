@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro | Biblioteca Virtual</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+
+  <!-- Google Login -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .register-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #2a5298;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .btn {
+      padding: 12px;
+      border-radius: 5px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .btn-primary {
+      background: #2a5298;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.05);
+    }
+
+    .google-login {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="register-container">
+  <h2>Crear Cuenta</h2>
+
+  <!-- Formulario de registro -->
+  <form id="registerForm">
+    <input type="text" id="nombre" placeholder="Nombre completo" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <input type="tel" id="celular" placeholder="Celular">
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
+    <button type="submit" class="btn btn-primary">Registrarse</button>
+  </form>
+
+  <!-- Login con Google -->
+  <div class="google-login">
+    <div id="g_id_onload"
+         data-client_id="892296470916-v6i0gamfpur8ircts0nrd9kvp99qhr0b.apps.googleusercontent.com"
+         data-context="signup"
+         data-callback="handleGoogleLogin"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signup_with" data-size="large"></div>
+  </div>
+
+  <div class="link">
+    <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+  </div>
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+  // Validación básica del formulario
+  document.getElementById("registerForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password !== confirmPassword) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
+
+    // Aquí puedes enviar los datos al backend
+    alert("Registro exitoso (simulado).");
+  });
+
+  // Callback de Google Login
+  function handleGoogleLogin(response) {
+    // Aquí envías el token al backend para validarlo
+    fetch('/backend/api/usuarios/google-login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ token: response.credential })
+    })
+    .then(r => r.json())
+    .then(data => {
+      console.log("Respuesta del servidor:", data);
+      alert("Login con Google exitoso (simulado).");
+    });
+  }
+</script>
+
+</body>
+</html>

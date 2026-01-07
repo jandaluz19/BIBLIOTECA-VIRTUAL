@@ -1,142 +1,226 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Biblioteca Virtual | Estadística e Informática</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Biblioteca Virtual | Estadística e Informática</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/variables.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/components.css">
-    <link rel="stylesheet" href="assets/css/responsive.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
 
-    <!-- Google Login -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    /* Portada */
+    .landing {
+      position: relative;
+      min-height: 100vh;
+      background: url("assets/img/biblioteca.png") no-repeat center center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+    .landing-overlay {
+      position: absolute;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.6);
+      z-index:0;
+    }
+    .landing-content {
+      position: relative;
+      z-index:1;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .landing-content h1 {
+      font-size: 3rem;
+      margin-bottom: .5rem;
+    }
+    .landing-content p {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+    .landing-actions .btn {
+      margin: 0 .5rem;
+      padding: .8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform .3s;
+      text-decoration: none;
+    }
+    .btn-primary { background:#fff; color:#2563eb; }
+    .btn-secondary { background:#4CAF50; color:#fff; }
+    .btn:hover { transform: scale(1.05); }
+
+    /* Slider de libros */
+    .book-slider {
+      position: relative;
+      display: flex;
+      gap: 20px;
+      margin-top: 2rem;
+      overflow-x: auto;
+      padding: 1rem;
+      z-index:1;
+    }
+    .book-slider img {
+      width: 150px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.3);
+      transition: transform .3s;
+    }
+    .book-slider img:hover {
+      transform: scale(1.1);
+    }
+
+    /* Biblioteca */
+    .app-header {
+      background: #1e3c72;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    .app-nav {
+      background: #2a5298;
+      padding: 1rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .nav-btn {
+      background: white;
+      color: #2a5298;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .nav-btn.active {
+      background: #ff9800;
+      color: white;
+    }
+    .app-content {
+      padding: 2rem;
+    }
+    .libros-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .libro-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.1);
+      text-align: center;
+      padding: 15px;
+      transition: transform .3s;
+    }
+    .libro-card:hover {
+      transform: scale(1.05);
+    }
+    .libro-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .libro-card h4 {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    .page { display: none; }
+    .page.active { display: block; }
+  </style>
 </head>
 <body>
 
 <!-- ================= PORTADA ================= -->
 <section id="landing" class="landing">
-    <div class="landing-overlay"></div>
-
-    <div class="landing-content">
-        <h1>📚 Biblioteca Virtual</h1>
-        <p>Estadística & Informática</p>
-
-        <div class="landing-actions">
-            <button class="btn btn-primary" id="btnOpenLogin">Iniciar sesión</button>
-            <button class="btn btn-secondary" id="btnOpenRegister">Registrarse</button>
-        </div>
+  <div class="landing-overlay"></div>
+  <div class="landing-content">
+    <h1>📚 Biblioteca Virtual</h1>
+    <p>Estadística & Informática</p>
+    <div class="landing-actions">
+      <a href="login.html" class="btn btn-primary">Iniciar sesión</a>
+      <a href="register.html" class="btn btn-secondary">Registrarse</a>
     </div>
-
-    <!-- Slider de libros -->
-    <div class="book-slider" id="bookSlider">
-        <!-- JS carga imágenes -->
-    </div>
+  </div>
+  <!-- Slider de libros -->
+  <div class="book-slider" id="bookSlider"></div>
 </section>
 
-<!-- ================= LOGIN ================= -->
-<div class="modal" id="loginModal">
-    <div class="modal-content modal-small">
-        <h2>Iniciar Sesión</h2>
-
-        <form id="loginForm">
-            <input type="email" id="loginEmail" placeholder="Correo" required>
-            <input type="password" id="loginPassword" placeholder="Contraseña" required>
-
-            <button class="btn btn-primary" type="submit">Ingresar</button>
-        </form>
-
-        <!-- Google -->
-        <div id="g_id_onload"
-            data-client_id="TU_CLIENT_ID_GOOGLE"
-            data-callback="handleGoogleLogin">
-        </div>
-
-        <div class="g_id_signin" data-theme="outline"></div>
-
-        <p class="link" id="openRecover">¿Olvidaste tu contraseña?</p>
-    </div>
-</div>
-
-<!-- ================= REGISTRO ================= -->
-<div class="modal" id="registerModal">
-    <div class="modal-content">
-        <h2>Registro</h2>
-
-        <form id="registerForm">
-            <input type="text" placeholder="Nombre completo" required>
-            <input type="email" placeholder="Correo" required>
-            <input type="tel" placeholder="Celular">
-            <input type="password" placeholder="Contraseña" required>
-            <input type="password" placeholder="Confirmar contraseña" required>
-
-            <button class="btn btn-primary">Crear cuenta</button>
-        </form>
-    </div>
-</div>
-
 <!-- ================= APP PRINCIPAL ================= -->
-<div id="app" class="app hidden">
-
-    <!-- Header -->
-    <header class="app-header">
-        <h2>📚 Biblioteca Virtual</h2>
-
-        <div class="user-info">
-            <span id="userName"></span>
-            <button id="logoutBtn">Salir</button>
-        </div>
-    </header>
-
-    <!-- Navegación -->
-    <nav class="app-nav">
-        <button data-page="libros" class="nav-btn active">Libros</button>
-        <button data-page="categorias" class="nav-btn">Categorías</button>
-
-        <!-- SOLO ADMIN -->
-        <button data-page="admin" class="nav-btn admin-only">Panel Admin</button>
-    </nav>
-
-    <!-- Contenido -->
-    <main class="app-content">
-
-        <!-- LIBROS -->
-        <section id="page-libros" class="page active">
-            <h3>Catálogo de Libros</h3>
-            <div id="librosGrid" class="libros-grid"></div>
-        </section>
-
-        <!-- ADMIN -->
-        <section id="page-admin" class="page">
-            <h3>Panel Administrador</h3>
-
-            <button class="btn btn-primary" id="btnNuevoLibro">➕ Agregar Libro</button>
-
-            <div id="adminLibrosGrid" class="libros-grid admin"></div>
-        </section>
-
-    </main>
+<div id="app" class="app">
+  <header class="app-header">
+    <h2>📚 Biblioteca Virtual</h2>
+  </header>
+  <nav class="app-nav">
+    <button data-page="libros" class="nav-btn active">Biblioteca</button>
+    <button data-page="categorias" class="nav-btn">Categorías</button>
+  </nav>
+  <main class="app-content">
+    <section id="page-libros" class="page active">
+      <h3>Catálogo de Libros</h3>
+      <div id="librosGrid" class="libros-grid"></div>
+    </section>
+    <section id="page-categorias" class="page">
+      <h3>Categorías</h3>
+      <p>Próximamente se mostrarán las categorías disponibles.</p>
+    </section>
+  </main>
 </div>
-
-<!-- ================= TOAST ================= -->
-<div id="toastContainer"></div>
 
 <!-- ================= JS ================= -->
-<script type="module" src="assets/js/main.js"></script>
+<script type="module">
+  const libros = [
+    {titulo:"Ingeniería de Software", img:"assets/img/libro1.jpg", url:"https://tuservidor.com/libros/ingenieria-software.pdf"},
+    {titulo:"Seguridad Informática", img:"assets/img/libro2.jpg", url:"https://tuservidor.com/libros/seguridad-informatica.pdf"},
+    {titulo:"Inferencia Estadística", img:"assets/img/libro3.jpg", url:"https://tuservidor.com/libros/inferencia-estadistica.pdf"},
+    {titulo:"Algoritmos y Programación", img:"assets/img/libro4.jpg", url:"https://tuservidor.com/libros/algoritmos-programacion.pdf"},
+    {titulo:"Análisis de Datos", img:"assets/img/libro5.jpg", url:"https://tuservidor.com/libros/analisis-datos.pdf"}
+  ];
 
-<script>
-/* Google login callback */
-function handleGoogleLogin(response) {
-    fetch('/backend/api/usuarios/google-login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ token: response.credential })
-    })
-    .then(r => r.json())
-    .then(data => console.log(data));
-}
+  // Render slider
+  const bookSlider = document.getElementById("bookSlider");
+  libros.forEach(libro=>{
+    const img = document.createElement("img");
+    img.src = libro.img;
+    img.alt = libro.titulo;
+    bookSlider.appendChild(img);
+  });
+
+  // Render catálogo
+  const librosGrid = document.getElementById("librosGrid");
+  libros.forEach(libro=>{
+    const card = document.createElement("div");
+    card.className="libro-card";
+    card.innerHTML = `
+      <a href="${libro.url}" target="_blank">
+        <img src="${libro.img}" alt="${libro.titulo}">
+        <h4>${libro.titulo}</h4>
+      </a>
+    `;
+    librosGrid.appendChild(card);
+  });
+
+  // Navegación entre páginas
+  const navBtns = document.querySelectorAll(".nav-btn");
+  const pages = document.querySelectorAll(".page");
+  navBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      navBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      pages.forEach(p => p.classList.remove("active"));
+      document.getElementById("page-" + btn.dataset.page).classList.add("active");
+    });
+  });
 </script>
 
 </body>

@@ -4,11 +4,27 @@ body {
 }
 
 .hero {
+  position: relative; /* necesario para el overlay */
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background: linear-gradient(135deg, #2563eb, #1e40af);
   color: white;
+  background: url("assets/img/biblioteca.jpg") no-repeat center center; /* tu imagen */
+  background-size: cover;
+}
+
+/* Overlay oscuro para mejorar legibilidad */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); /* ajusta la opacidad */
+  z-index: 0;
+}
+
+.hero-left, .hero-right {
+  position: relative;
+  z-index: 1; /* asegura que el contenido esté encima del overlay */
 }
 
 .hero-left {

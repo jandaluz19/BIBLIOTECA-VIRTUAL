@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Login | Biblioteca Virtual</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name=" viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google -->
+  <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
@@ -26,13 +26,14 @@
       width: 100%;
       box-shadow: 0 25px 50px rgba(0,0,0,.25);
     }
-    h1 { text-align: center; }
+    h1 { text-align: center; margin-bottom: 1.5rem; }
     input {
       width: 100%;
       padding: .7rem;
       margin-bottom: .8rem;
       border-radius: 8px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     button {
       width: 100%;
@@ -42,43 +43,63 @@
       background: #2563eb;
       color: white;
       cursor: pointer;
+      font-weight: 600;
     }
     .divider {
       text-align: center;
       margin: 1.2rem 0;
       color: #777;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #ddd;
+    }
+    .divider span {
+      padding: 0 10px;
     }
     .toggle {
       text-align: center;
       margin-top: 1rem;
       cursor: pointer;
       color: #2563eb;
+      text-decoration: underline;
+    }
+    #message {
+      min-height: 20px;
+      margin: 10px 0;
+      color: red;
+      text-align: center;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 
 <body>
 <div class="card">
-
   <h1>Biblioteca Virtual</h1>
 
-  <!-- LOGIN -->
+  <!-- LOGIN TRADICIONAL -->
   <form id="loginForm">
-    <input type="email" id="loginEmail" placeholder="Correo" required>
-    <input type="password" id="loginPassword" placeholder="Contraseña" required>
+    <input type="text" id="username" placeholder="Usuario (ej: admin)" required>
+    <input type="password" id="password" placeholder="Contraseña (ej: 1234)" required>
+    <div id="message"></div>
     <button type="submit">Iniciar sesión</button>
   </form>
 
-  <div class="divider">— O —</div>
+  <div class="divider"><span>— O —</span></div>
 
-  <!-- GOOGLE -->
-  <div
-    id="g_id_onload"
-    data-client_id="892296470916-v6i0gamfpur8ircts0nrd9kvp99qhr0b.apps.googleusercontent.com"
-    data-callback="handleGoogleLogin"
-    data-auto_prompt="false">
+  <!-- GOOGLE LOGIN -->
+  <div id="g_id_onload"
+       data-client_id="892296470916-v6i0gamfpur8ircts0nrd9kvp99qhr0b.apps.googleusercontent.com"
+       data-callback="handleGoogleLogin"
+       data-auto_prompt="false">
   </div>
-
   <div class="g_id_signin"
        data-type="standard"
        data-size="large"
@@ -90,84 +111,53 @@
     ¿Olvidaste tu contraseña?
   </div>
 
-  <div class="toggle" onclick="mostrarRegistro()">
+  <div class="toggle" style="margin-top: 0.5rem;" onclick="alert('Registro aún no disponible')">
     ¿No tienes cuenta? Registrarse
   </div>
-
-  <!-- REGISTRO -->
-  <form id="registerForm" style="display:none; margin-top:1rem;">
-    <input type="text" placeholder="Nombre" required>
-    <input type="text" placeholder="Apellidos" required>
-    <input type="email" placeholder="Correo" required>
-    <input type="password" placeholder="Contraseña" required>
-    <input type="password" placeholder="Confirmar contraseña" required>
-    <button type="submit">Registrarse</button>
-
-    <div class="toggle" onclick="mostrarLogin()">Ya tengo cuenta</div>
-  </form>
-
 </div>
 
 <script>
-/* CAMBIO DE FORMULARIOS */
-function mostrarRegistro() {
-  loginForm.style.display = 'none';
-  registerForm.style.display = 'block';
-}
-function mostrarLogin() {
-  registerForm.style.display = 'none';
-  loginForm.style.display = 'block';
-}
-
-/* LOGIN TRADICIONAL */
-document.getElementById('loginForm').addEventListener('submit', async e => {
+// ✅ LOGIN TRADICIONAL (SIN BACKEND)
+document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
+  
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const messageDiv = document.getElementById('message');
 
-  const email = loginEmail.value;
-  const password = loginPassword.value;
-
-  try {
-    const response = await fetch('/BIBLIOTECA-VIRTUAL/backend/api/usuarios/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      alert(result.message || 'Error de login');
-      return;
-    }
-
-    // 🔐 Guardar sesión
-    localStorage.setItem('token', result.data.token);
-    localStorage.setItem('usuario', JSON.stringify(result.data.usuario));
-
+  // Usuarios predefinidos (para prototipo)
+  if ((username === 'admin' && password === '1234') || (username === 'usuario' && password === '1234')) {
+    // Guardar sesión
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('username', username);
+    localStorage.setItem('role', username === 'admin' ? 'admin' : 'user');
+    
+    messageDiv.textContent = 'Iniciando sesión...';
+    messageDiv.style.color = 'green';
+    
     // ✅ REDIRIGIR AL CATÁLOGO
-    window.location.href = 'catalogo.html';
-
-  } catch (err) {
-    alert('Error de conexión');
+    setTimeout(() => {
+      window.location.href = 'catalogo.html';
+    }, 600);
+  } else {
+    messageDiv.textContent = 'Usuario o contraseña incorrectos';
+    messageDiv.style.color = 'red';
   }
 });
 
-/* LOGIN GOOGLE */
+// ✅ LOGIN CON GOOGLE (simulado)
 function handleGoogleLogin(response) {
-  const payload = JSON.parse(atob(response.credential.split('.')[1]));
-
-  localStorage.setItem('usuario', JSON.stringify({
-    nombre: payload.name,
-    email: payload.email,
-    avatar: payload.picture,
-    proveedor: 'google'
-  }));
-
-  localStorage.setItem('token', 'google-auth');
-
+  // Simular autenticación exitosa
+  localStorage.setItem('isLoggedIn', 'true');
+  localStorage.setItem('username', 'usuario_google');
+  localStorage.setItem('role', 'user');
+  
   // ✅ REDIRIGIR AL CATÁLOGO
   window.location.href = 'catalogo.html';
 }
+
+// Hacer visible para Google Identity Services
+window.handleGoogleLogin = handleGoogleLogin;
 </script>
 
 </body>

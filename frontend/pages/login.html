@@ -10,7 +10,7 @@
 <h2>Iniciar sesión</h2>
 
 <div id="g_id_onload"
-     data-client_id="AQUI_TU_CLIENT_ID"
+     data-client_id="892296470916-v6i0gamfpur8ircts0nrd9kvp99qhr0b.apps.googleusercontent.com"
      data-callback="loginGoogle">
 </div>
 
@@ -31,6 +31,16 @@ function loginGoogle(response) {
   });
 }
 </script>
+
+<form onsubmit="login(event)">
+    <!-- Cambiar id="username" por id="email" -->
+    <input type="email" id="username" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <button type="submit">Iniciar Sesión</button>
+</form>
+
+<!-- Agregar script -->
+<script src="../assets/js/login.js"></script>
 
 </body>
 </html>

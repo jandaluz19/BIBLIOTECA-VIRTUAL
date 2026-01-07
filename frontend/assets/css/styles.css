@@ -123,3 +123,8 @@ section h2 {
     font-size: 16px;
     margin: 10px 0;
 }
+
+.hero-left .images-top img {
+  width: 220px;
+  height: 220px;
+}
