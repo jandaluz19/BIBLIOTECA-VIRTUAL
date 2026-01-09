@@ -2,13 +2,13 @@
 session_start();
 require_once 'conexion.php';
 
-// Proteger ruta: solo admin
+
 if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'admin') {
     header("Location: ../frontend/login.html");
     exit;
 }
 
-// Util: asegurar carpetas de destino
+// aseguramos la carpeta de destino
 function asegurarDirectorios() {
     $bases = [
         __DIR__ . '/uploads',
@@ -23,7 +23,6 @@ function asegurarDirectorios() {
 }
 asegurarDirectorios();
 
-// Subida de portada a uploads/covers y retorno de ruta relativa accesible
 function guardarPortada($file, $portadaActual = null) {
     if (empty($file['name'])) {
         return $portadaActual ?: 'uploads/covers/default.jpg';
@@ -35,7 +34,7 @@ function guardarPortada($file, $portadaActual = null) {
         return $portadaActual ?: 'uploads/covers/default.jpg';
     }
 
-    // Eliminar portada anterior si existe y no es la predeterminada
+    // Eliminar portada
     if ($portadaActual && $portadaActual !== 'uploads/covers/default.jpg') {
         $rutaVieja = __DIR__ . '/' . $portadaActual;
         if (is_file($rutaVieja)) {
@@ -53,10 +52,10 @@ function guardarPortada($file, $portadaActual = null) {
     return $portadaActual ?: 'uploads/covers/default.jpg';
 }
 
-// Subida de PDF a uploads/pdfs y retorno de ruta relativa accesible
+//se gauarda lirbos subidos
 function guardarPdf($file, $pdfActual = null) {
     if (empty($file['name'])) {
-        return $pdfActual; // mantener el actual si no se sube uno nuevo
+        return $pdfActual; 
     }
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     if ($ext !== 'pdf') {
@@ -66,7 +65,7 @@ function guardarPdf($file, $pdfActual = null) {
     $destino = __DIR__ . '/uploads/pdfs/' . $nombre;
 
     if (move_uploaded_file($file['tmp_name'], $destino)) {
-        // opcional: eliminar el anterior si existía y estaba en uploads/pdfs
+        
         if ($pdfActual && str_starts_with($pdfActual, 'uploads/pdfs/')) {
             $rutaVieja = __DIR__ . '/' . $pdfActual;
             if (is_file($rutaVieja)) {
@@ -82,7 +81,6 @@ $mensaje = "";
 $editando = false;
 $libroEditar = null;
 
-// Cargar libro para editar (si viene ?edit=ID)
 if (isset($_GET['edit'])) {
     $editando = true;
     $id = (int)$_GET['edit'];
@@ -96,7 +94,7 @@ if (isset($_GET['edit'])) {
     $stmt->close();
 }
 
-// AGREGAR LIBRO
+// se agrega libross
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'agregar') {
     $titulo = trim($_POST['titulo'] ?? '');
     $autor = trim($_POST['autor'] ?? '');
@@ -128,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
 // EDITAR LIBRO
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'editar') {
     $id = (int)($_POST['id'] ?? 0);
-    // Traer el libro actual para conservar rutas si no se reemplazan
+  
     $stmt = $conn->prepare("SELECT archivo_pdf, portada_url FROM libros WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -164,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
 // ELIMINAR LIBRO
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    // Opcional: eliminar archivos asociados antes de borrar el registro
+    
     $stmt = $conn->prepare("SELECT archivo_pdf, portada_url FROM libros WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
